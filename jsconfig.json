@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "target": "ES2017",
+    "lib": ["ES2017", "dom"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "checkJs": true,
+    "strict": false
+  },
+  "include": ["src/**/*", ".next/types/**/*.js"],
+  "exclude": ["node_modules"]
+}

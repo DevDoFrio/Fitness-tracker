@@ -115,3 +115,5 @@ build/Release
 *.tmp
 .cache/
 .temp/
+
+/src/generated/prisma

@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Fitness Tracker
 
-## Getting Started
+A comprehensive full-stack fitness tracking application for monitoring workouts, nutrition, and health goals.
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Fitness Tracker is a web application that helps users manage their fitness journey by tracking workouts, logging meals, setting goals, and visualizing progress through interactive analytics. Built with modern web technologies, it features a responsive design and secure authentication.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Workout Management**: Log exercises with duration, type, calories burned, and custom notes
+- **Nutrition Tracking**: Record meals with detailed macronutrient breakdown (calories, protein, carbs, fats)
+- **Goal Setting**: Define personalized fitness goals including calorie targets and weekly workout frequency
+- **Analytics Dashboard**: Visual progress tracking with charts and statistics
+- **User Profiles**: Secure authentication with profile customization
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+**Frontend**
+- Next.js 14 (App Router)
+- React 19
+- Tailwind CSS
+- Recharts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Backend**
+- Next.js API Routes
+- NextAuth.js
+- Prisma ORM
+- PostgreSQL (Supabase)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## About This Project
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project was built to demonstrate full-stack development capabilities, including:
+- Modern React patterns with Next.js 14 App Router
+- Database design and management with Prisma
+- Secure authentication and authorization
+- RESTful API development
+- Responsive UI/UX design
+- Form validation and error handling
+- Data visualization
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contact
+
+Created as a portfolio project. Feel free to explore the code and reach out with any questions.

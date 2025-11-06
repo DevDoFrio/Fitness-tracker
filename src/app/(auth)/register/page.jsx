@@ -39,7 +39,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch('/api/user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -55,7 +55,6 @@ export default function RegisterPage() {
         throw new Error(data.error || 'Registration failed');
       }
 
-      // Redirect to login
       router.push('/login?registered=true');
     } catch (err) {
       setError(err.message);

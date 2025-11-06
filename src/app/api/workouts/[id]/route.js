@@ -16,7 +16,7 @@ export async function GET(req, { params }) {
     const workout = await prisma.workout.findUnique({
       where: {
         id: id,
-        userId: session.user.id, // Ensure user owns this workout
+        userId: session.user.id,
       },
     });
 

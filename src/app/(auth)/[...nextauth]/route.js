@@ -16,7 +16,6 @@ export const authOptions = {
           throw new Error('Please enter an email and password');
         }
 
-        // Find user in database
         const user = await prisma.user.findUnique({
           where: { email: credentials.email }
         });
@@ -25,7 +24,6 @@ export const authOptions = {
           throw new Error('No user found with this email');
         }
 
-        // Check password
         const isValid = await bcrypt.compare(credentials.password, user.password);
 
         if (!isValid) {

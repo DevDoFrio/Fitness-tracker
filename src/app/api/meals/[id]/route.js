@@ -23,7 +23,6 @@ export async function GET(req, { params }) {
 
     return NextResponse.json(meal);
   } catch (error) {
-    console.error('Error fetching meal:', error);
     return NextResponse.json(
       { error: 'Failed to fetch meal' },
       { status: 500 }
@@ -59,13 +58,12 @@ export async function PUT(req, { params }) {
         protein: parseInt(protein),
         carbs: parseInt(carbs),
         fats: parseInt(fats),
-        date: new Date(date),
+        date: new Date(date + 'T00:00:00'),
       },
     });
 
     return NextResponse.json(meal);
   } catch (error) {
-    console.error('Error updating meal:', error);
     return NextResponse.json(
       { error: 'Failed to update meal' },
       { status: 500 }
@@ -97,7 +95,6 @@ export async function DELETE(req, { params }) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting meal:', error.message);
     return NextResponse.json(
       { error: error },
       { status: 500 }

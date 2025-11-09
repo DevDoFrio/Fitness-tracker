@@ -119,7 +119,6 @@ export default function ProfileForm({ userData }) {
         throw new Error(data.error || 'Failed to delete account');
       }
 
-      // Sign out and redirect to home
       await signOut({ callbackUrl: '/' });
     } catch (err) {
       setError(err.message);
@@ -141,7 +140,6 @@ export default function ProfileForm({ userData }) {
         </div>
       )}
 
-      {/* User Info Display */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Account Information</h2>
         <div className="space-y-3">
@@ -162,7 +160,6 @@ export default function ProfileForm({ userData }) {
         </div>
       </div>
 
-      {/* Update Email Form */}
       <form onSubmit={handleEmailSubmit} className="bg-white rounded-lg shadow p-6 space-y-4">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Update Email</h2>
 
@@ -190,7 +187,6 @@ export default function ProfileForm({ userData }) {
         </button>
       </form>
 
-      {/* Update Password Form */}
       <form onSubmit={handlePasswordSubmit} className="bg-white rounded-lg shadow p-6 space-y-4">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Change Password</h2>
 
@@ -250,7 +246,6 @@ export default function ProfileForm({ userData }) {
         </button>
       </form>
 
-      {/* Delete Account Section */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold text-red-600 mb-4">Danger Zone</h2>
         <p className="text-gray-600 mb-4">

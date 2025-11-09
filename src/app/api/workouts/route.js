@@ -25,12 +25,14 @@ export async function GET(req) {
           },
         }),
       },
+      include: {
+        exercises: true,
+      },
       orderBy: { date: 'desc' },
     });
 
     return NextResponse.json(workouts);
   } catch (error) {
-    console.error('Error fetching workouts:', error);
     return NextResponse.json(
       { error: 'Failed to fetch workouts' },
       { status: 500 }
@@ -41,13 +43,13 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await req.json();
-    const { type, duration, caloriesBurned, notes, date } = body;
+    const { type, duration, caloriesBurned, notes, date, exercises } = body;
 
     if (!type || !duration || !caloriesBurned || !date) {
       return NextResponse.json(
@@ -56,22 +58,36 @@ export async function POST(req) {
       );
     }
 
+    const workoutData = {
+      type,
+      duration: parseInt(duration),
+      caloriesBurned: parseInt(caloriesBurned),
+      notes: notes || null,
+      date: new Date(date + 'T00:00:00'),
+      userId: session.user.id,
+    };
+
+    if (exercises && exercises.length > 0) {
+      workoutData.exercises = {
+        create: exercises.map((exercise) => ({
+          name: exercise.exercise,
+          muscleGroup: exercise.muscleGroup || null,
+          weight: parseFloat(exercise.weight),
+        })),
+      };
+    }
+
     const workout = await prisma.workout.create({
-      data: {
-        type,
-        duration: parseInt(duration),
-        caloriesBurned: parseInt(caloriesBurned),
-        notes: notes || null,
-        date: new Date(date),
-        userId: session.user.id,
+      data: workoutData,
+      include: {
+        exercises: true,
       },
     });
 
     return NextResponse.json(workout, { status: 201 });
   } catch (error) {
-    console.error('Error creating workout:', error);
     return NextResponse.json(
-      { error: 'Failed to create workout' },
+      { error: 'Failed to create workout', details: error.message },
       { status: 500 }
     );
   }

@@ -34,33 +34,51 @@ model UserPreferences {
   id                String   @id @default(cuid())
   userId            String   @unique
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   calorieGoal       Int?
   proteinGoal       Int?
   carbsGoal         Int?
   fatsGoal          Int?
   workoutGoalWeekly Int?
-  
+  currentWeight     Float?
+  goalWeight        Float?
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
 
 model Workout {
-  id             String   @id @default(cuid())
+  id             String     @id @default(cuid())
   userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   type           String
   duration       Int
   caloriesBurned Int
   notes          String?
   date           DateTime
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  
+  exercises      Exercise[]
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
   @@index([userId])
   @@index([userId, date])
+}
+
+model Exercise {
+  id          String  @id @default(cuid())
+  workoutId   String
+  workout     Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+
+  name        String
+  muscleGroup String?
+  weight      Float
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([workoutId])
 }
 
 model Meal {

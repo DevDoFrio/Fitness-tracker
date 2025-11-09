@@ -55,7 +55,6 @@ export async function PUT(req) {
 
     return NextResponse.json({ success: true, message: 'Password updated successfully' });
   } catch (error) {
-    console.error('Error updating password:', error);
     return NextResponse.json(
       { error: 'Failed to update password' },
       { status: 500 }

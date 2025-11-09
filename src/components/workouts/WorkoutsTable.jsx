@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 
 export default function WorkoutsTable({ workouts, onDelete }) {
@@ -56,37 +57,59 @@ export default function WorkoutsTable({ workouts, onDelete }) {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {workouts.map((workout) => (
-            <tr key={workout.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {new Date(workout.date).toLocaleDateString()}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {workout.type}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {workout.duration} min
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {workout.caloriesBurned} cal
-              </td>
-              <td className="px-6 py-4 text-sm text-gray-900">
-                {workout.notes || '-'}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                <Link
-                  href={`/workouts/${workout.id}`}
-                  className="text-blue-600 hover:text-blue-900"
-                >
-                  Edit
-                </Link>
-                <button
-                  onClick={() => handleDelete(workout.id)}
-                  className="text-red-600 hover:text-red-900"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
+            <React.Fragment key={workout.id}>
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {new Date(workout.date).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {workout.type}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {workout.duration} min
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {workout.caloriesBurned} cal
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-900">
+                  {workout.notes || '-'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                  <Link
+                    href={`/workouts/${workout.id}`}
+                    className="text-blue-600 hover:text-blue-900"
+                  >
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(workout.id)}
+                    className="text-red-600 hover:text-red-900"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+              {workout.type === 'Strength' && workout.exercises && workout.exercises.length > 0 && (
+                <tr key={`${workout.id}-exercises`}>
+                  <td colSpan="6" className="px-6 py-3 bg-gray-50">
+                    <div className="text-sm">
+                      <div className="font-medium text-gray-700 mb-2">Exercises:</div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {workout.exercises.map((exercise, index) => (
+                          <div key={exercise.id || index} className="bg-white p-2 rounded border border-gray-200">
+                            <div className="font-medium text-gray-900">{exercise.name}</div>
+                            {exercise.muscleGroup && (
+                              <div className="text-xs text-gray-600">{exercise.muscleGroup}</div>
+                            )}
+                            <div className="text-xs text-gray-700 mt-1">Weight: {exercise.weight} lbs</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

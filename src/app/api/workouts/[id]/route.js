@@ -18,6 +18,9 @@ export async function GET(req, { params }) {
         id: id,
         userId: session.user.id,
       },
+      include: {
+        exercises: true,
+      },
     });
 
     if (!workout) {
@@ -29,7 +32,6 @@ export async function GET(req, { params }) {
 
     return NextResponse.json(workout);
   } catch (error) {
-    console.error('Error fetching workout:', error);
     return NextResponse.json(
       { error: 'Failed to fetch workout' },
       { status: 500 }
@@ -40,14 +42,14 @@ export async function GET(req, { params }) {
 export async function PUT(req, { params }) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { id } = await params;
     const body = await req.json();
-    const { type, duration, caloriesBurned, notes, date } = body;
+    const { type, duration, caloriesBurned, notes, date, exercises } = body;
 
     const existingWorkout = await prisma.workout.findUnique({
       where: {
@@ -70,13 +72,23 @@ export async function PUT(req, { params }) {
         duration: parseInt(duration),
         caloriesBurned: parseInt(caloriesBurned),
         notes: notes || null,
-        date: new Date(date),
+        date: new Date(date + 'T00:00:00'),
+        exercises: {
+          deleteMany: {},
+          create: exercises && exercises.length > 0 ? exercises.map((exercise) => ({
+            name: exercise.exercise,
+            muscleGroup: exercise.muscleGroup || null,
+            weight: parseFloat(exercise.weight),
+          })) : [],
+        },
+      },
+      include: {
+        exercises: true,
       },
     });
 
     return NextResponse.json(workout);
   } catch (error) {
-    console.error('Error updating workout:', error);
     return NextResponse.json(
       { error: 'Failed to update workout' },
       { status: 500 }
@@ -114,7 +126,6 @@ export async function DELETE(req, { params }) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting workout:', error);
     return NextResponse.json(
       { error: 'Failed to delete workout' },
       { status: 500 }

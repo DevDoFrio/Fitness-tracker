@@ -30,7 +30,6 @@ export async function GET(req) {
 
     return NextResponse.json(meals);
   } catch (error) {
-    console.error('Error fetching meals:', error);
     return NextResponse.json(
       { error: 'Failed to fetch meals' },
       { status: 500 }
@@ -64,14 +63,13 @@ export async function POST(req) {
         fats: parseInt(fats),
         carbs: parseInt(carbs),
         protein: parseInt(protein),
-        date: new Date(date),
+        date: new Date(date + 'T00:00:00'),
         userId: session.user.id,
       },
     });
 
     return NextResponse.json(meal, { status: 201 });
   } catch (error) {
-    console.error('Error creating meal:', error);
     return NextResponse.json(
       { error: error },
       { status: 500 }

@@ -16,10 +16,9 @@ export async function GET(req) {
         userId: session.user.id,
       },
     });
-    
+
     return NextResponse.json(preferences);
   } catch (error) {
-    console.error('Error fetching goals:', error);
     return NextResponse.json(
       { error: 'Failed to fetch goals' },
       { status: 500 }
@@ -61,7 +60,6 @@ export async function PUT(req) {
 
     return NextResponse.json(preferences);
   } catch (error) {
-    console.error('Error updating goals:', error);
     return NextResponse.json(
       { error: 'Failed to update goals' },
       { status: 500 }

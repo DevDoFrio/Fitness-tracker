@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import ExerciseSelector from './ExerciseSelector';
 
 export default function WorkoutForm({ initialData = null, workoutId = null }) {
   const router = useRouter();
@@ -13,9 +14,10 @@ export default function WorkoutForm({ initialData = null, workoutId = null }) {
     duration: initialData?.duration?.toString() || '',
     caloriesBurned: initialData?.caloriesBurned?.toString() || '',
     notes: initialData?.notes || '',
-    date: initialData?.date 
+    date: initialData?.date
       ? new Date(initialData.date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0],
+    exercises: initialData?.exercises || [],
   });
 
   const workoutTypes = [
@@ -39,6 +41,13 @@ export default function WorkoutForm({ initialData = null, workoutId = null }) {
     });
   };
 
+  const handleExercisesChange = (exercises) => {
+    setFormData({
+      ...formData,
+      exercises,
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -56,7 +65,7 @@ export default function WorkoutForm({ initialData = null, workoutId = null }) {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to save workout');
+        throw new Error(data.details || data.error || 'Failed to save workout');
       }
 
       router.push('/workouts');
@@ -96,6 +105,13 @@ export default function WorkoutForm({ initialData = null, workoutId = null }) {
           ))}
         </select>
       </div>
+
+      {formData.type === 'Strength' && (
+        <ExerciseSelector
+          exercises={formData.exercises}
+          onExercisesChange={handleExercisesChange}
+        />
+      )}
 
       <div>
         <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-2">

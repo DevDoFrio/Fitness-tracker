@@ -13,12 +13,16 @@ export default function NutritionChart({ data, goals, metric = 'calories' }) {
       </div>
     );
   }
-
-  const formattedData = data.map((item) => ({
-    ...item,
-    dateLabel: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    value: Math.round(item[metric]),
-  }));
+  
+  const formattedData = data.map((item) => {
+    const [year, month, day] = item.date.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    return {
+      ...item,
+      dateLabel: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      value: Math.round(item[metric]),
+    };
+  });
 
   const goalFieldName = metric === 'calories' ? 'calorieGoal' : `${metric}Goal`;
   const goalValueRaw = goals?.[goalFieldName];

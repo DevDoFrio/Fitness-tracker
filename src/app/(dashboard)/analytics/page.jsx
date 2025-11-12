@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import WorkoutFrequencyChart from '@/components/charts/WorkoutFrequencyChart';
 import NutritionChart from '@/components/charts/NutritionChart';
+import WeightChart from '@/components/charts/WeightChart';
 
 export default function AnalyticsPage() {
   const [analytics, setAnalytics] = useState(null);
@@ -89,6 +90,11 @@ export default function AnalyticsPage() {
           <WorkoutFrequencyChart
             data={analytics.weeklyWorkouts}
             goal={analytics.goals?.workoutGoalWeekly}
+          />
+
+          <WeightChart
+            currentWeight={analytics.goals?.currentWeight}
+            goalWeight={analytics.goals?.goalWeight}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

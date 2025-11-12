@@ -28,6 +28,12 @@ export default function WorkoutFrequencyChart({ data, goal }) {
     };
   });
 
+  // Calculate the max value from the data
+  const maxCount = Math.max(...formattedData.map(item => item.count));
+
+  // Set domain: use goal as max, but increase if user exceeded it
+  const yAxisMax = goal ? Math.max(goal, maxCount) : maxCount;
+
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">Weekly Workout Frequency</h2>
@@ -40,7 +46,11 @@ export default function WorkoutFrequencyChart({ data, goal }) {
         <ComposedChart data={formattedData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="dateLabel" />
-          <YAxis yAxisId="left" label={{ value: 'Workouts', angle: -90, position: 'insideLeft' }} />
+          <YAxis
+            yAxisId="left"
+            label={{ value: 'Workouts', angle: -90, position: 'insideLeft' }}
+            domain={[0, yAxisMax]}
+          />
           <Tooltip />
           <Legend />
           <Bar yAxisId="left" dataKey="count" fill="#3b82f6" name="Workouts" />

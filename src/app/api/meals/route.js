@@ -25,6 +25,9 @@ export async function GET(req) {
           },
         }),
       },
+      include: {
+        foods: true,
+      },
       orderBy: { date: 'desc' },
     });
 
@@ -46,32 +49,50 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const { mealType, name, calories, fats, carbs, protein, date } = body;
+    const { mealType, name, calories, fats, carbs, protein, date, foods } = body;
 
-    if (!mealType || !name || !fats || !calories || !carbs || !protein || !date) {
+    if (!mealType || !name || !date) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
+    const mealData = {
+      mealType,
+      name,
+      calories: parseInt(calories),
+      fats: parseFloat(fats),
+      carbs: parseFloat(carbs),
+      protein: parseFloat(protein),
+      date: new Date(date + 'T00:00:00'),
+      userId: session.user.id,
+    };
+
+    if (foods && foods.length > 0) {
+      mealData.foods = {
+        create: foods.map((food) => ({
+          name: food.name,
+          weightGrams: parseFloat(food.weightGrams),
+          calories: parseFloat(food.calories),
+          protein: parseFloat(food.protein),
+          carbs: parseFloat(food.carbs),
+          fats: parseFloat(food.fats),
+        })),
+      };
+    }
+
     const meal = await prisma.meal.create({
-      data: {
-        mealType: mealType,
-        name: name,
-        calories: parseInt(calories),
-        fats: parseInt(fats),
-        carbs: parseInt(carbs),
-        protein: parseInt(protein),
-        date: new Date(date + 'T00:00:00'),
-        userId: session.user.id,
+      data: mealData,
+      include: {
+        foods: true,
       },
     });
 
     return NextResponse.json(meal, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: error },
+      { error: 'Failed to create meal', details: error.message },
       { status: 500 }
     );
   }

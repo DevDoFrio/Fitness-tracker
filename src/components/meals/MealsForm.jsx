@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import FoodSelector from './FoodSelector';
 
 export default function MealForm({ initialData = null, mealId = null }) {
   const router = useRouter();
@@ -18,7 +19,30 @@ export default function MealForm({ initialData = null, mealId = null }) {
     date: initialData?.date
       ? new Date(initialData.date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0],
+    foods: initialData?.foods || [],
   });
+
+  useEffect(() => {
+    if (formData.foods) {
+      const totals = formData.foods.reduce(
+        (acc, food) => ({
+          calories: acc.calories + (parseFloat(food.calories) || 0),
+          protein: acc.protein + (parseFloat(food.protein) || 0),
+          carbs: acc.carbs + (parseFloat(food.carbs) || 0),
+          fats: acc.fats + (parseFloat(food.fats) || 0),
+        }),
+        { calories: 0, protein: 0, carbs: 0, fats: 0 }
+      );
+
+      setFormData((prev) => ({
+        ...prev,
+        calories: totals.calories.toFixed(1),
+        protein: totals.protein.toFixed(1),
+        carbs: totals.carbs.toFixed(1),
+        fats: totals.fats.toFixed(1),
+      }));
+    }
+  }, [formData.foods]);
 
   const mealTypes = [
     'Breakfast',
@@ -32,6 +56,13 @@ export default function MealForm({ initialData = null, mealId = null }) {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleFoodsChange = (foods) => {
+    setFormData({
+      ...formData,
+      foods,
     });
   };
 
@@ -96,7 +127,7 @@ export default function MealForm({ initialData = null, mealId = null }) {
           Meal Name *
         </label>
         <input
-          type="string"
+          type="text"
           id="name"
           name="name"
           value={formData.name}
@@ -106,68 +137,81 @@ export default function MealForm({ initialData = null, mealId = null }) {
         />
       </div>
 
-      <div>
-        <label htmlFor="calories" className="block text-sm font-medium text-gray-700 mb-2">
-          Calories *
-        </label>
-        <input
-          type="number"
-          id="calories"
-          name="calories"
-          value={formData.calories}
-          onChange={handleChange}
-          required
-          min="1"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <FoodSelector
+        foods={formData.foods}
+        onFoodsChange={handleFoodsChange}
+      />
 
-      <div>
-        <label htmlFor="fats" className="block text-sm font-medium text-gray-700 mb-2">
-          fats *
-        </label>
-        <input
-          type="number"
-          id="fats"
-          name="fats"
-          value={formData.fats}
-          onChange={handleChange}
-          required
-          min="0"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      
-      <div>
-       <label htmlFor="protein" className="block text-sm font-medium text-gray-700 mb-2">
-         Protein *
-       </label>
-       <input
-         type="number"
-         id="protein"
-         name="protein"
-         value={formData.protein}
-         onChange={handleChange}
-         required
-         min="0"
-         className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-       />
-       </div> 
+      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Total Nutrition</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Calories
+            </label>
+            <input
+              type="number"
+              name="calories"
+              value={formData.calories}
+              onChange={handleChange}
+              min="0"
+              step="0.1"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              placeholder="Auto"
+            />
+          </div>
 
-       <div>
-        <label htmlFor="carbs" className="block text-sm font-medium text-gray-700 mb-2">
-          Carbs *
-        </label>
-        <input
-          type="number"
-          id="carbs"
-          name="carbs"
-          value={formData.carbs}
-          onChange={handleChange}
-          required
-          min="0"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Protein (g)
+            </label>
+            <input
+              type="number"
+              name="protein"
+              value={formData.protein}
+              onChange={handleChange}
+              min="0"
+              step="0.1"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              placeholder="Auto"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Carbs (g)
+            </label>
+            <input
+              type="number"
+              name="carbs"
+              value={formData.carbs}
+              onChange={handleChange}
+              min="0"
+              step="0.1"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              placeholder="Auto"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Fats (g)
+            </label>
+            <input
+              type="number"
+              name="fats"
+              value={formData.fats}
+              onChange={handleChange}
+              min="0"
+              step="0.1"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              placeholder="Auto"
+            />
+          </div>
+        </div>
+        <p className="text-sm text-gray-500 mt-2">
+          Values are auto-calculated from foods. You can manually override them if needed.
+        </p>
       </div>
 
       <div>

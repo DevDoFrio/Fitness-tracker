@@ -85,7 +85,7 @@ model Meal {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   name      String
   calories  Int
   protein   Float
@@ -93,10 +93,29 @@ model Meal {
   fats      Float
   mealType  String
   date      DateTime
-  
+  foods     Food[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@index([userId])
   @@index([userId, date])
+}
+
+model Food {
+  id          String   @id @default(cuid())
+  mealId      String
+  meal        Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+
+  name        String
+  weightGrams Float
+  calories    Float
+  protein     Float
+  carbs       Float
+  fats        Float
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([mealId])
 }

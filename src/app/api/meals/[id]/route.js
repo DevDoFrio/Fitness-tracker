@@ -16,6 +16,9 @@ export async function GET(req, { params }) {
         id,
         userId: session.user.id,
       },
+      include: {
+        foods: true,
+      },
     });
 
     if (!meal)
@@ -37,7 +40,7 @@ export async function PUT(req, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { id } = await params;
-    const { mealType, name, calories, protein, carbs, fats, date } = await req.json();
+    const { mealType, name, calories, protein, carbs, fats, date, foods } = await req.json();
 
     const existingMeal = await prisma.meal.findUnique({
       where: {
@@ -52,20 +55,34 @@ export async function PUT(req, { params }) {
     const meal = await prisma.meal.update({
       where: { id },
       data: {
-        mealType: mealType,
-        name: name,
+        mealType,
+        name,
         calories: parseInt(calories),
-        protein: parseInt(protein),
-        carbs: parseInt(carbs),
-        fats: parseInt(fats),
+        protein: parseFloat(protein),
+        carbs: parseFloat(carbs),
+        fats: parseFloat(fats),
         date: new Date(date + 'T00:00:00'),
+        foods: {
+          deleteMany: {},
+          create: foods && foods.length > 0 ? foods.map((food) => ({
+            name: food.name,
+            weightGrams: parseFloat(food.weightGrams),
+            calories: parseFloat(food.calories),
+            protein: parseFloat(food.protein),
+            carbs: parseFloat(food.carbs),
+            fats: parseFloat(food.fats),
+          })) : [],
+        },
+      },
+      include: {
+        foods: true,
       },
     });
 
     return NextResponse.json(meal);
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to update meal' },
+      { error: 'Failed to update meal', details: error.message },
       { status: 500 }
     );
   }

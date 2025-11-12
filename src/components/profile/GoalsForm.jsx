@@ -13,6 +13,8 @@ export default function GoalsForm() {
     carbsGoal: '',
     fatsGoal: '',
     workoutGoalWeekly: '',
+    goalWeight: '',
+    currentWeight: '',
   });
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export default function GoalsForm() {
   const fetchGoals = async () => {
     try {
       const response = await fetch('/api/goals');
-      if (!response.ok) throw new Error('Failed to fetch goals');
+      if (!response.ok) throw new Error(response);
       const data = await response.json();
 
       if (data) {
@@ -32,6 +34,8 @@ export default function GoalsForm() {
           carbsGoal: data.carbsGoal?.toString() || '',
           fatsGoal: data.fatsGoal?.toString() || '',
           workoutGoalWeekly: data.workoutGoalWeekly?.toString() || '',
+          goalWeight: data.goalWeight?.toString() || '',
+          currentWeight: data.currentWeight?.toString() || '',
         });
       }
     } catch (err) {
@@ -112,6 +116,40 @@ export default function GoalsForm() {
           min="0"
           className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="e.g., 2000"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="goalWeight" className="block text-sm font-medium text-gray-700 mb-2">
+          Goal Weight (lbs)
+        </label>
+        <input
+          type="number"
+          id="goalWeight"
+          name="goalWeight"
+          value={formData.goalWeight}
+          onChange={handleChange}
+          min="0"
+          step="0.1"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="e.g., 150"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="currentWeight" className="block text-sm font-medium text-gray-700 mb-2">
+          Current Weight (lbs)
+        </label>
+        <input
+          type="number"
+          id="currentWeight"
+          name="currentWeight"
+          value={formData.currentWeight}
+          onChange={handleChange}
+          min="0"
+          step="0.1"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="e.g., 160"
         />
       </div>
 

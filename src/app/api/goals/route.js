@@ -20,7 +20,7 @@ export async function GET(req) {
     return NextResponse.json(preferences);
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to fetch goals' },
+      { error: "Failed to pull goals" },
       { status: 500 }
     );
   }
@@ -35,7 +35,7 @@ export async function PUT(req) {
     }
 
     const body = await req.json();
-    const { calorieGoal, proteinGoal, carbsGoal, fatsGoal, workoutGoalWeekly } = body;
+    const { calorieGoal, currentWeight, goalWeight, proteinGoal, carbsGoal, fatsGoal, workoutGoalWeekly } = body;
 
     const preferences = await prisma.userPreferences.upsert({
       where: {
@@ -46,6 +46,8 @@ export async function PUT(req) {
         proteinGoal: proteinGoal ? parseInt(proteinGoal) : null,
         carbsGoal: carbsGoal ? parseInt(carbsGoal) : null,
         fatsGoal: fatsGoal ? parseInt(fatsGoal) : null,
+        goalWeight: goalWeight ? parseFloat(goalWeight) : null,
+        currentWeight: currentWeight ? parseFloat(currentWeight) : null,
         workoutGoalWeekly: workoutGoalWeekly ? parseInt(workoutGoalWeekly) : null,
       },
       create: {
@@ -54,11 +56,14 @@ export async function PUT(req) {
         proteinGoal: proteinGoal ? parseInt(proteinGoal) : null,
         carbsGoal: carbsGoal ? parseInt(carbsGoal) : null,
         fatsGoal: fatsGoal ? parseInt(fatsGoal) : null,
+        goalWeight: goalWeight ? parseFloat(goalWeight) : null,
+        currentWeight: currentWeight ? parseFloat(currentWeight) : null,
         workoutGoalWeekly: workoutGoalWeekly ? parseInt(workoutGoalWeekly) : null,
       },
     });
 
     return NextResponse.json(preferences);
+
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to update goals' },
